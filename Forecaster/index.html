@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fuel and Energy Forecaster</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-ui.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-exports.min.js"></script>
+    <link href="https://cdn.anychart.com/releases/v8/css/anychart-ui.min.css" type="text/css" rel="stylesheet">
+    <link href="https://cdn.anychart.com/releases/v8/fonts/css/anychart-font.min.css" type="text/css" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="./main.css" />
+  </head>
+
+ 
+  
+  <body>
+    <a href="../index.html" style="position:absolute; top:12px; left:16px; z-index:100; color:white; font-size:15px; text-decoration:none;">&larr; Back to portfolio</a>
+    <div id="chart_container" class="chart_container"></div>
+    <div id="buttons" class="buttons">
+        <button class="button" onclick="increaseIndex()">Scroll Left</button>
+        <button class="button" onclick="decreaseIndex()">Scroll Right</button>
+        <select id="mode" onchange="toggleMode()" class="mode_button">
+          <option value="historical">Past</option>
+          <option value="forecast">Future</option>
+        </select>
+    </div>
+
+    <script src="./data.js"></script>
+    <script src="./index.js"></script>
+  </body>
+</html>
