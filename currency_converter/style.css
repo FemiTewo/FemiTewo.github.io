@@ -115,3 +115,5 @@ form button{
 form button:hover{
   background: #4534fe;
 }
+.back-link{margin-bottom:8px;font-size:15px;}
+.back-link a{color:#675AFE;}
