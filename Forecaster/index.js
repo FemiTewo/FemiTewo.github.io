@@ -1,111 +1,86 @@
-let index = 0;
+// Rows from data.js look like: [label, solid, gas, liquid, electricity]
+let index = 0;            // how many months back from the latest data
 let chartMode = "historical";
 
-var dataSet = anychart.data.set(CurrentData(chartMode, index));
+const statusEl = document.getElementById("status");
+const earlierBtn = document.getElementById("earlier");
+const laterBtn = document.getElementById("later");
 
-var firstSeriesData = dataSet.mapAs({ x: 0, value: 1 });
+const SERIES = [
+    { name: "Gas", column: 2, color: "#2f9bff" },
+    { name: "Liquid fuels", column: 3, color: "#0d47a1" },
+    { name: "Electricity", column: 4, color: "#f57c00" }
+];
 
-var secondSeriesData = dataSet.mapAs({ x: 0, value: 2 });
-
-var thirdSeriesData = dataSet.mapAs({ x: 0, value: 3 });
-
-var fourthSeriesData = dataSet.mapAs({ x: 0, value: 4 });
-
-var chart = anychart.line();
-
-chart.animation(true);
-
-chart.padding([10, 20, 5, 20]);
-
-chart.crosshair().enabled(true).yLabel(false).yStroke(null);
-
-chart.tooltip().positionMode('point');
-
-chart.title(
-    'Fuel and Energy Cost Prediction'
-);
-
-chart.yAxis().title('Price (GBP)');
-chart.xAxis().labels().padding(5);
-
-chart.xScale().mode('continuous');
-
-var secondSeries = chart.line(secondSeriesData);
-secondSeries.name('Gas');
-secondSeries.hovered().markers().enabled(true).type('circle').size(4);
-secondSeries
-    .tooltip()
-    .position('right')
-    .anchor('left-center')
-    .offsetX(5)
-    .offsetY(5);
-
-var thirdSeries = chart.line(thirdSeriesData);
-thirdSeries.name('Liquid fuels');
-thirdSeries.hovered().markers().enabled(true).type('circle').size(4);
-thirdSeries
-    .tooltip()
-    .position('right')
-    .anchor('left-center')
-    .offsetX(5)
-    .offsetY(5);
-
-var fourthSeries = chart.line(fourthSeriesData);
-fourthSeries.name('Electricity');
-fourthSeries.hovered().markers().enabled(true).type('circle').size(4);
-fourthSeries
-    .tooltip()
-    .position('right')
-    .anchor('left-center')
-    .offsetX(5)
-    .offsetY(5);
-
-chart.legend().enabled(true).fontSize(13).padding([0, 0, 10, 0]);
-
-chart.container('chart_container');
-
-chart.draw();
-
-function toggleMode() {
-    chartMode = document.getElementById("mode").selectedOptions[0].value
-    
-    if (chartMode === "historical") {
-        let newData = CurrentData(chartMode, 0)
-        for (let i = 0; i < 12; i++) {
-            dataSet.row(i, newData[i]);
-        }
-    }
-    else {
-        let newData = ForecastData()
-        console.log(newData)
-        for (let i = 0; i < 12; i++) {
-            dataSet.row(i, newData[i]);
-        }
-    }
+function currentRows() {
+    return chartMode === "historical" ? CurrentData(chartMode, index) : ForecastData();
 }
 
-function increaseIndex() {
-    if (chartMode === "historical") {
-        if (index < 321 - 12) index += 1;
-        else {
-            alert("Insufficient data.")
-        }
-        let newData = CurrentData(chartMode, index)
-        dataSet.remove(dataSet.getRowsCount() - 1)
-        dataSet.insert(newData[0])
-    }
-    else alert("Scrolling is disabled in forecast mode.")
+function buildData(rows) {
+    return {
+        labels: rows.map((row) => String(row[0]).split("\n")),
+        datasets: SERIES.map((s) => ({
+            label: s.name,
+            data: rows.map((row) => Number(row[s.column])),
+            borderColor: s.color,
+            backgroundColor: s.color,
+            borderWidth: 2.5,
+            pointRadius: 3,
+            pointHoverRadius: 6,
+            tension: 0.25
+        }))
+    };
 }
 
-function decreaseIndex() {
-    if (chartMode === "historical") {
-        if (index > 0) index -= 1;
-        else {
-            alert("Insufficient data.")
+const chart = new Chart(document.getElementById("chart"), {
+    type: "line",
+    data: buildData(currentRows()),
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: "index", intersect: false },
+        plugins: {
+            title: { display: true, text: "Fuel and energy prices (sample data)", font: { size: 16 } },
+            legend: { position: "bottom" },
+            tooltip: {
+                callbacks: {
+                    title: (items) => String(items[0].label).replace(/,/g, " "),
+                    label: (item) => ` ${item.dataset.label}: ${item.parsed.y.toFixed(1)}`
+                }
+            }
+        },
+        scales: {
+            y: { title: { display: true, text: "Price (sample data)" }, beginAtZero: true },
+            x: { grid: { display: false } }
         }
-        let newData = CurrentData(chartMode, index)
-        dataSet.remove(0)
-        dataSet.insert(newData[newData.length - 1], -1)
     }
-    else alert("Scrolling is disabled in forecast mode.")
+});
+
+function refresh() {
+    chart.data = buildData(currentRows());
+    chart.update();
+    const forecast = chartMode === "forecast";
+    earlierBtn.disabled = forecast || index >= FuelData.length - 12;
+    laterBtn.disabled = forecast || index <= 0;
+    statusEl.textContent = forecast
+        ? "Projection for the 12 months after the last data point. Scrolling is disabled in this mode."
+        : "Showing 12 months of sample data. Use Earlier and Later to move through time.";
 }
+
+earlierBtn.addEventListener("click", () => {
+    if (index < FuelData.length - 12) index += 1;
+    refresh();
+});
+
+laterBtn.addEventListener("click", () => {
+    if (index > 0) index -= 1;
+    refresh();
+});
+
+document.getElementById("mode").addEventListener("change", (event) => {
+    chartMode = event.target.value;
+    if (chartMode === "historical") index = 0;
+    refresh();
+});
+
+refresh();

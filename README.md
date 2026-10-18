@@ -8,7 +8,7 @@ Live site: https://femitewo.github.io/
 
 - `index.html`, `style.css`, `script.js`: the single-page portfolio (plain HTML, CSS and JavaScript, no build step)
 - `currency_converter/`: a currency converter that uses the free open endpoint of [ExchangeRate-API](https://www.exchangerate-api.com)
-- `Forecaster/`: an interactive fuel and energy price chart with a simple trend-based forecast, built with AnyChart
+- `Forecaster/`: an early charting project on a sample fuel and energy price dataset, with a simple growth-rate projection, built with Chart.js
 - `404.html`: custom page-not-found page
 
 ## Related projects

@@ -1,37 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fuel and Energy Forecaster</title>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuel and Energy Forecaster (early project)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="./main.css">
+</head>
+<body>
+    <main class="page">
+        <a class="back" href="../index.html">&larr; Back to portfolio</a>
 
-    <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
-    <script src="https://cdn.anychart.com/releases/v8/js/anychart-ui.min.js"></script>
-    <script src="https://cdn.anychart.com/releases/v8/js/anychart-exports.min.js"></script>
-    <link href="https://cdn.anychart.com/releases/v8/css/anychart-ui.min.css" type="text/css" rel="stylesheet">
-    <link href="https://cdn.anychart.com/releases/v8/fonts/css/anychart-font.min.css" type="text/css" rel="stylesheet">
+        <h1>Fuel and Energy Forecaster</h1>
+        <p class="note">
+            <strong>Early project, sample data.</strong>
+            It charts a sample monthly price series for gas, liquid fuels and electricity (January 1996 to
+            August 2022). The values are illustrative and the units are not verified. "Future" extends the
+            last 12 months with a simple growth-rate projection. It is a demo of charting and data handling,
+            not a real price prediction.
+        </p>
 
-    <link rel="stylesheet" type="text/css" href="./main.css" />
-  </head>
-
- 
-  
-  <body>
-    <a href="../index.html" style="position:absolute; top:12px; left:16px; z-index:100; color:white; font-size:15px; text-decoration:none;">&larr; Back to portfolio</a>
-    <div id="chart_container" class="chart_container"></div>
-    <div id="buttons" class="buttons">
-        <button class="button" onclick="increaseIndex()">Scroll Left</button>
-        <button class="button" onclick="decreaseIndex()">Scroll Right</button>
-        <select id="mode" onchange="toggleMode()" class="mode_button">
-          <option value="historical">Past</option>
-          <option value="forecast">Future</option>
-        </select>
-    </div>
+        <div class="chart-card">
+            <div class="chart-wrap">
+                <canvas id="chart" aria-label="Line chart of fuel and energy prices" role="img"></canvas>
+            </div>
+            <div class="controls">
+                <button class="button" id="earlier" type="button">&larr; Earlier</button>
+                <button class="button" id="later" type="button">Later &rarr;</button>
+                <select id="mode" class="mode_button" aria-label="Chart mode">
+                    <option value="historical">Past (12 months)</option>
+                    <option value="forecast">Future (projection)</option>
+                </select>
+            </div>
+            <p class="status" id="status" aria-live="polite"></p>
+        </div>
+    </main>
 
     <script src="./data.js"></script>
     <script src="./index.js"></script>
-  </body>
+</body>
 </html>
